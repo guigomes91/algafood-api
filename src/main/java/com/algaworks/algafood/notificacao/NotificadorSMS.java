@@ -4,9 +4,9 @@ import com.algaworks.algafood.modelo.Cliente;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Qualifier("urgente")
+@ATipoNotificador(TipoNotificador.URGENTE)
 @Component
-public class NotificadorSMS implements Notificador {it a
+public class NotificadorSMS implements Notificador {
 
     @Override
     public void notificar(Cliente cliente, String mensagem) {
