@@ -5,9 +5,9 @@ import com.algaworks.algafood.service.AtivacaoClienteService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
+@Configuration
 public class ServiceConfig {
-    @Bean
+    @Bean(initMethod = "init", destroyMethod = "destroy")
     public AtivacaoClienteService ativacaoClienteService(Notificador notificador) {
         return new AtivacaoClienteService();
     }
