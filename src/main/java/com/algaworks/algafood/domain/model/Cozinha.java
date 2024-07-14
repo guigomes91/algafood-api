@@ -11,6 +11,6 @@ import javax.persistence.Entity;
 @Entity
 public class Cozinha extends Id {
 
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String nome;
 }
