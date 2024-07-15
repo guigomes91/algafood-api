@@ -2,6 +2,7 @@ package com.algaworks.algafood.infrastructure.repository;
 
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.repository.CidadeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Slf4j
 @Component
 public class CidadeRepositoryImpl implements CidadeRepository {
     @PersistenceContext
@@ -23,6 +25,7 @@ public class CidadeRepositoryImpl implements CidadeRepository {
     @Transactional
     @Override
     public Cidade salvar(Cidade cidade) {
+        log.info("Salvando cidade {}", cidade.getNome());
         return manager.merge(cidade);
     }
 
@@ -36,5 +39,6 @@ public class CidadeRepositoryImpl implements CidadeRepository {
     public void remover(Cidade cidade) {
         cidade = this.buscar(cidade.getId());
         manager.remove(cidade);
+        log.info("Cidade {} removida com sucesso!", cidade.getNome());
     }
 }
