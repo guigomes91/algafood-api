@@ -9,14 +9,12 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-@JsonRootName(value = "gastronomia")
+@JsonRootName(value = "cozinha")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Data
 @Entity
 public class Cozinha extends Id {
 
-    //@JsonIgnore
-    @JsonProperty(value = "titulo")
     @Column(length = 30, nullable = false)
     private String nome;
 }
