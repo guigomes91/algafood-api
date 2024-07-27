@@ -1,7 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.domain.model.Estado;
-import com.algaworks.algafood.domain.model.repository.EstadoRepository;
+import com.algaworks.algafood.domain.repository.EstadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
