@@ -26,6 +26,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
+    @Transactional
     public Restaurante salvar(Restaurante restaurante) {
         return manager.merge(restaurante);
     }
