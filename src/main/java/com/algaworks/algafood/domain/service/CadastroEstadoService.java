@@ -1,12 +1,14 @@
 package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.domain.exception.AtributoInvalidoException;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -48,15 +50,21 @@ public class CadastroEstadoService {
     }
 
     public void remover(Long id) {
-        Estado estadoAtual = estadoRepository.buscar(id);
+        try {
+            Estado estadoAtual = estadoRepository.buscar(id);
 
-        if (Objects.isNull(estadoAtual)) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Estado não encontrado com o código %d", id)
+            if (Objects.isNull(estadoAtual)) {
+                throw new EntidadeNaoEncontradaException(
+                        String.format("Estado não encontrado com o código %d", id)
+                );
+            }
+
+            estadoRepository.remover(estadoAtual);
+        } catch (DataIntegrityViolationException e) {
+            throw new EntidadeEmUsoException(
+                    String.format("Estado de código %d não pode ser removido, pois está em uso", id)
             );
         }
-
-        estadoRepository.remover(estadoAtual);
     }
 
 }

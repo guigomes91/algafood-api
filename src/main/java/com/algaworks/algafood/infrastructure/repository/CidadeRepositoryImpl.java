@@ -3,6 +3,7 @@ package com.algaworks.algafood.infrastructure.repository;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,11 @@ public class CidadeRepositoryImpl implements CidadeRepository {
     @Transactional
     public void remover(Cidade cidade) {
         cidade = this.buscar(cidade.getId());
+
+        if (cidade == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
         manager.remove(cidade);
         log.info("Cidade {} removida com sucesso!", cidade.getNome());
     }
