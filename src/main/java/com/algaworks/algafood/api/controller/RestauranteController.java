@@ -48,4 +48,17 @@ public class RestauranteController {
                     .body(e.getMessage());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@RequestBody Restaurante restaurante, @PathVariable Long id) {
+        try {
+            restaurante = cadastroRestauranteService.alterar(restaurante, id);
+            return ResponseEntity.ok(restaurante);
+        } catch (EntidadeNaoEncontradaException e) {
+            if (e.getMessage().contains("restaurante")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

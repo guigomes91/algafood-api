@@ -6,6 +6,7 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,31 @@ public class CadastroRestauranteService {
             );
         }
         restaurante.setCozinha(cozinha);
+
+        return restauranteRepository.salvar(restaurante);
+    }
+
+    public Restaurante alterar(Restaurante restaurante, Long id) {
+        Long cozinhaId = restaurante.getCozinha().getId();
+        Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
+
+        Restaurante restauranteAtual = restauranteRepository.buscar(id);
+
+        if (restauranteAtual == null) {
+            throw new EntidadeNaoEncontradaException(
+                    String.format("Não existe cadastro de restaurante com o código %d", id)
+            );
+        }
+
+        if (cozinha == null) {
+            throw new EntidadeNaoEncontradaException(
+                    String.format("Não existe cadastro de cozinha com o código %d", cozinhaId)
+            );
+        }
+
+        BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+        restaurante.setCozinha(cozinha);
+        restaurante.setId(id);
 
         return restauranteRepository.salvar(restaurante);
     }
