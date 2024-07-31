@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,7 +77,6 @@ public class RestauranteController {
         }
 
         merge(campos, restauranteAtual);
-
         return atualizar(restauranteAtual, id);
     }
 
