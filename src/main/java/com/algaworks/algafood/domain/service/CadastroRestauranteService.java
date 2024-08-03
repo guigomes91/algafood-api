@@ -18,40 +18,32 @@ public class CadastroRestauranteService {
 
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
+        Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format("Não existe cadastro de cozinha com código %d", cozinhaId)
+                ));
 
-        if (cozinha == null) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe cadastro de cozinha com código %d", cozinhaId)
-            );
-        }
         restaurante.setCozinha(cozinha);
 
-        return restauranteRepository.salvar(restaurante);
+        return restauranteRepository.save(restaurante);
     }
 
     public Restaurante alterar(Restaurante restaurante, Long id) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
+        Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
+                .orElseThrow(() ->  new EntidadeNaoEncontradaException(
+                        String.format("Não existe cadastro de cozinha com o código %d", cozinhaId)
+                ));
 
-        Restaurante restauranteAtual = restauranteRepository.buscar(id);
-
-        if (restauranteAtual == null) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe cadastro de restaurante com o código %d", id)
-            );
-        }
-
-        if (cozinha == null) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe cadastro de cozinha com o código %d", cozinhaId)
-            );
-        }
+        Restaurante restauranteAtual = restauranteRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format("Não existe cadastro de restaurante com o código %d", id)
+                ));
 
         BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
         restaurante.setCozinha(cozinha);
         restaurante.setId(id);
 
-        return restauranteRepository.salvar(restaurante);
+        return restauranteRepository.save(restaurante);
     }
 }

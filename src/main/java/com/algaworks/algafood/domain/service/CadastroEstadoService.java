@@ -11,55 +11,44 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @RequiredArgsConstructor
 @Service
 public class CadastroEstadoService {
 
+    public static final String EMPTY_FIELD_NAME = "O campo nome não pode ser vazio!";
     private final EstadoRepository estadoRepository;
 
     public Estado salvar(Estado estado) {
         if (Strings.isBlank(estado.getNome())) {
-            throw new AtributoInvalidoException(
-                    String.format("O campo nome não pode ser vazio!")
-            );
+            throw new AtributoInvalidoException(EMPTY_FIELD_NAME);
         }
 
-        return estadoRepository.salvar(estado);
+        return estadoRepository.save(estado);
     }
 
     public Estado alterar(Estado estado, Long id) {
-        Estado estadoAtual = estadoRepository.buscar(id);
-
-        if (Objects.isNull(estadoAtual)) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Estado não encontrado com o código %d", id)
-            );
-        }
+        Estado estadoAtual = estadoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format("Estado não encontrado com o código %d", id)
+                ));
 
         if (Strings.isBlank(estado.getNome())) {
-            throw new AtributoInvalidoException(
-                    String.format("O campo nome não pode ser vazio!")
-            );
+            throw new AtributoInvalidoException(EMPTY_FIELD_NAME);
         }
 
         BeanUtils.copyProperties(estado, estadoAtual, "id");
         estadoAtual.setId(id);
-        return estadoRepository.salvar(estadoAtual);
+        return estadoRepository.save(estadoAtual);
     }
 
     public void remover(Long id) {
         try {
-            Estado estadoAtual = estadoRepository.buscar(id);
+            Estado estadoAtual = estadoRepository.findById(id)
+                    .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                            String.format("Estado não encontrado com o código %d", id)
+                    ));
 
-            if (Objects.isNull(estadoAtual)) {
-                throw new EntidadeNaoEncontradaException(
-                        String.format("Estado não encontrado com o código %d", id)
-                );
-            }
-
-            estadoRepository.remover(estadoAtual);
+            estadoRepository.delete(estadoAtual);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format("Estado de código %d não pode ser removido, pois está em uso", id)

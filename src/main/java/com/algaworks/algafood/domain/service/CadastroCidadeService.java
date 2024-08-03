@@ -23,13 +23,10 @@ public class CadastroCidadeService {
     private final EstadoRepository estadoRepository;
 
     public Cidade salvar(Cidade cidade) {
-        Estado estado = estadoRepository.buscar(cidade.getEstado().getId());
-
-        if (Objects.isNull(estado)) {
-            throw new EntidadeNaoEncontradaException(
+        estadoRepository.findById(cidade.getEstado().getId())
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(
                     String.format("Estado não encontrado com o código %d", cidade.getEstado().getId())
-            );
-        }
+            ));
 
         if (Strings.isBlank(cidade.getNome())) {
             throw new AtributoInvalidoException(
@@ -37,24 +34,19 @@ public class CadastroCidadeService {
             );
         }
 
-        return cidadeRepository.salvar(cidade);
+        return cidadeRepository.save(cidade);
     }
 
     public Cidade alterar(Cidade cidade, Long id) {
-        Cidade cidadeAtual = cidadeRepository.buscar(id);
-        Estado estado = estadoRepository.buscar(cidade.getEstado().getId());
+        Cidade cidadeAtual = cidadeRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format("Cidade não encontrada com o código %d", id)
+                ));
 
-        if (Objects.isNull(estado)) {
-            throw new EntidadeNaoEncontradaException(
+        estadoRepository.findById(cidade.getEstado().getId())
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(
                     String.format("Estado não encontrado com o código %d", cidade.getEstado().getId())
-            );
-        }
-
-        if (Objects.isNull(cidadeAtual)) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Cidade não encontrada com o código %d", id)
-            );
-        }
+            ));
 
         if (Strings.isBlank(cidade.getNome())) {
             throw new AtributoInvalidoException(
@@ -64,18 +56,17 @@ public class CadastroCidadeService {
 
         BeanUtils.copyProperties(cidade, cidadeAtual, "id");
         cidadeAtual.setId(id);
-        return cidadeRepository.salvar(cidadeAtual);
+        return cidadeRepository.save(cidadeAtual);
     }
 
     public void remover(Long id) {
         try {
-            Cidade cidade = cidadeRepository.buscar(id);
-            if (Objects.isNull(cidade)) {
-                throw new EntidadeNaoEncontradaException(
-                        String.format("Cidade não encontrada com o código %d", id)
-                );
-            }
-            cidadeRepository.remover(cidade);
+            Cidade cidade = cidadeRepository.findById(id)
+                    .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                            String.format("Cidade não encontrada com o código %d", id)
+                    ));
+
+            cidadeRepository.delete(cidade);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format("Cidade de código %d não pode ser removida, pois está em uso", id)
