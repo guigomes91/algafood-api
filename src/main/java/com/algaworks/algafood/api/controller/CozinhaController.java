@@ -63,4 +63,9 @@ public class CozinhaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+
+    @GetMapping("/por-nome")
+    public List<Cozinha> cozinhasPorNome(@RequestParam("nome") String nome) {
+        return cozinhaRepository.findByNomeContaining(nome);
+    }
 }

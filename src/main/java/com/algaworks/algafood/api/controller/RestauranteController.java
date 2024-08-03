@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -12,6 +13,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -86,5 +88,21 @@ public class RestauranteController {
             Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
             ReflectionUtils.setField(field, restauranteDestino, novoValor);
         });
+    }
+
+    @GetMapping("/por-taxa")
+    public List<Restaurante> restaurantesPorTaxaFrete(
+            @RequestParam("taxaInicial") BigDecimal taxaInicial,
+            @RequestParam("taxaFinal") BigDecimal taxaFinal
+    ) {
+        return restauranteRepository.findByTaxaFreteBetween(taxaInicial, taxaFinal);
+    }
+
+    @GetMapping("/por-nome")
+    public List<Restaurante> restaurantesPorNomeECozinha(
+            @RequestParam("nome") String nome,
+            @RequestParam("cozinha") Long cozinha
+    ) {
+        return restauranteRepository.findByNomeContainingAndCozinhaId(nome, cozinha);
     }
 }
