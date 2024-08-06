@@ -103,6 +103,6 @@ public class RestauranteController {
             @RequestParam("nome") String nome,
             @RequestParam("cozinha") Long cozinha
     ) {
-        return restauranteRepository.findByNomeContainingAndCozinhaId(nome, cozinha);
+        return restauranteRepository.consultarPorNome(nome, cozinha);
     }
 }
