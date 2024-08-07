@@ -92,10 +92,11 @@ public class RestauranteController {
 
     @GetMapping("/por-taxa")
     public List<Restaurante> restaurantesPorTaxaFrete(
+            @RequestParam("nome") String nome,
             @RequestParam("taxaInicial") BigDecimal taxaInicial,
             @RequestParam("taxaFinal") BigDecimal taxaFinal
     ) {
-        return restauranteRepository.findByTaxaFreteBetween(taxaInicial, taxaFinal);
+        return restauranteRepository.find(nome, taxaInicial, taxaFinal);
     }
 
     @GetMapping("/por-nome")
