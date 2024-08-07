@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,9 +93,9 @@ public class RestauranteController {
 
     @GetMapping("/por-taxa")
     public List<Restaurante> restaurantesPorTaxaFrete(
-            @RequestParam("nome") String nome,
-            @RequestParam("taxaInicial") BigDecimal taxaInicial,
-            @RequestParam("taxaFinal") BigDecimal taxaFinal
+            @RequestParam("nome") @Nullable String nome,
+            @RequestParam("taxaInicial") @Nullable BigDecimal taxaInicial,
+            @RequestParam("taxaFinal") @Nullable BigDecimal taxaFinal
     ) {
         return restauranteRepository.find(nome, taxaInicial, taxaFinal);
     }
