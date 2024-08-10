@@ -10,7 +10,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,9 +59,27 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
     public List<Restaurante> find(String nome,
                                   BigDecimal taxaFreteInicial,
                                   BigDecimal taxaFreteFinal) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
-        CriteriaQuery<Restaurante> criteriaQuery = builder.createQuery(Restaurante.class);
-        criteriaQuery.from(Restaurante.class);
+        var builder = manager.getCriteriaBuilder();
+        var criteriaQuery = builder.createQuery(Restaurante.class);
+        var root = criteriaQuery.from(Restaurante.class);
+
+        var predicates = new ArrayList<Predicate>();
+
+        if (StringUtils.hasText(nome)) {
+            predicates.add(builder.like(root.get("nome"), "%".concat(nome).concat("%")));
+        }
+
+        if (taxaFreteInicial != null) {
+            predicates.add(builder
+                    .greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial));
+        }
+
+        if (taxaFreteFinal != null) {
+            predicates.add(builder
+                    .lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal));
+        }
+
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
         return manager.createQuery(criteriaQuery)
                 .getResultList();
