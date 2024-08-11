@@ -112,6 +112,6 @@ public class RestauranteController {
     public List<Restaurante> restaurantesComTaxaFreteGratis(
             @RequestParam("nome") @Nullable String nome
     ) {
-        return restauranteRepository.findAll(RestauranteSpecs.comFreteGratis().and(RestauranteSpecs.comNomeSemelhante(nome)));
+        return restauranteRepository.findComFreteGratis(nome);
     }
 }
