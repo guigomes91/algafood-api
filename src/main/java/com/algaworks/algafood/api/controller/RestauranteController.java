@@ -1,12 +1,10 @@
 package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
-import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
-import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
+import com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -114,9 +112,6 @@ public class RestauranteController {
     public List<Restaurante> restaurantesComTaxaFreteGratis(
             @RequestParam("nome") @Nullable String nome
     ) {
-        var comFreteGratis = new RestauranteComFreteGratisSpec();
-        var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
-
-        return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
+        return restauranteRepository.findAll(RestauranteSpecs.comFreteGratis().and(RestauranteSpecs.comNomeSemelhante(nome)));
     }
 }
