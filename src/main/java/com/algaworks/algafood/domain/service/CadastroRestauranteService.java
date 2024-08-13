@@ -40,7 +40,8 @@ public class CadastroRestauranteService {
                         String.format("Não existe cadastro de restaurante com o código %d", id)
                 ));
 
-        BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco");
+        BeanUtils.copyProperties(restaurante, restauranteAtual,
+                "id", "formasPagamento", "endereco", "dataCadastro");
         return restauranteRepository.save(restauranteAtual);
     }
 }
