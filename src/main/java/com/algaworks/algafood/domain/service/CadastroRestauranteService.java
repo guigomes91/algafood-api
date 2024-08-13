@@ -30,7 +30,7 @@ public class CadastroRestauranteService {
 
     public Restaurante alterar(Restaurante restaurante, Long id) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
+        cozinhaRepository.findById(cozinhaId)
                 .orElseThrow(() ->  new EntidadeNaoEncontradaException(
                         String.format("Não existe cadastro de cozinha com o código %d", cozinhaId)
                 ));
