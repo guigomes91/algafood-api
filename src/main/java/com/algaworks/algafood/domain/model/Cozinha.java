@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @JsonRootName(value = "cozinha")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -17,4 +19,8 @@ public class Cozinha extends Id {
 
     @Column(length = 30, nullable = false)
     private String nome;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "cozinha")
+    private List<Restaurante> restaurantes;
 }
