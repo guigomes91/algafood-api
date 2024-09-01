@@ -41,7 +41,7 @@ public class CadastroRestauranteService {
                 ));
 
         BeanUtils.copyProperties(restaurante, restauranteAtual,
-                "id", "formasPagamento", "endereco", "dataCadastro");
+                "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
         return restauranteRepository.save(restauranteAtual);
     }
 }
