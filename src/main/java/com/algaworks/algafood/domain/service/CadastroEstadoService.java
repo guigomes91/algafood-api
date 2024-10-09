@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CadastroEstadoService {
 
+    public static final String MSG_ESTADO_NAO_ENCONTRADO = "Não existe um cadastro de estado com o código %d";
+    public static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso";
     public static final String EMPTY_FIELD_NAME = "O campo nome não pode ser vazio!";
+
     private final EstadoRepository estadoRepository;
 
     public Estado salvar(Estado estado) {
@@ -29,7 +32,7 @@ public class CadastroEstadoService {
     public Estado alterar(Estado estado, Long id) {
         Estado estadoAtual = estadoRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format("Estado não encontrado com o código %d", id)
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
                 ));
 
         if (Strings.isBlank(estado.getNome())) {
@@ -45,15 +48,22 @@ public class CadastroEstadoService {
         try {
             Estado estadoAtual = estadoRepository.findById(id)
                     .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                            String.format("Estado não encontrado com o código %d", id)
+                            String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
                     ));
 
             estadoRepository.delete(estadoAtual);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
-                    String.format("Estado de código %d não pode ser removido, pois está em uso", id)
+                    String.format(MSG_ESTADO_EM_USO, id)
             );
         }
+    }
+
+    public Estado buscarOuFalhar(Long estadoId) {
+        return estadoRepository.findById(estadoId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, estadoId)
+                ));
     }
 
 }

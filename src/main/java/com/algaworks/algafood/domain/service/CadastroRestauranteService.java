@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CadastroRestauranteService {
 
+    public static final String MSG_COZINHA_NAO_ENCONTRADO = "Não existe cadastro de cozinha com o código %d";
+    public static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Não existe cadastro de restaurante com o código %d";
+
     private final RestauranteRepository restauranteRepository;
     private final CozinhaRepository cozinhaRepository;
 
@@ -20,7 +23,7 @@ public class CadastroRestauranteService {
         Long cozinhaId = restaurante.getCozinha().getId();
         Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format("Não existe cadastro de cozinha com código %d", cozinhaId)
+                        String.format(MSG_COZINHA_NAO_ENCONTRADO, cozinhaId)
                 ));
 
         restaurante.setCozinha(cozinha);
@@ -32,16 +35,23 @@ public class CadastroRestauranteService {
         Long cozinhaId = restaurante.getCozinha().getId();
         cozinhaRepository.findById(cozinhaId)
                 .orElseThrow(() ->  new EntidadeNaoEncontradaException(
-                        String.format("Não existe cadastro de cozinha com o código %d", cozinhaId)
+                        String.format(MSG_COZINHA_NAO_ENCONTRADO, cozinhaId)
                 ));
 
         Restaurante restauranteAtual = restauranteRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format("Não existe cadastro de restaurante com o código %d", id)
+                        String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)
                 ));
 
         BeanUtils.copyProperties(restaurante, restauranteAtual,
                 "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
         return restauranteRepository.save(restauranteAtual);
+    }
+
+    public Restaurante buscarOuFalhar(Long restauranteId) {
+        return restauranteRepository.findById(restauranteId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, restauranteId)
+                ));
     }
 }
