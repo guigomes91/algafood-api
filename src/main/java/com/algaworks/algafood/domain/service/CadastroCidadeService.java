@@ -26,18 +26,12 @@ public class CadastroCidadeService {
 
     private final CidadeRepository cidadeRepository;
     private final EstadoRepository estadoRepository;
+    private final CadastroEstadoService cadastroEstadoService;
 
     public Cidade salvar(Cidade cidade) {
-        estadoRepository.findById(cidade.getEstado().getId())
-            .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                    String.format("Estado não encontrado com o código %d", cidade.getEstado().getId())
-            ));
-
-        if (Strings.isBlank(cidade.getNome())) {
-            throw new AtributoInvalidoException(
-                    String.format("O campo nome não pode ser vazio!")
-            );
-        }
+        Long estadoId = cidade.getEstado().getId();
+        Estado estado = cadastroEstadoService.buscarOuFalhar(estadoId);
+        cidade.setEstado(estado);
 
         return cidadeRepository.save(cidade);
     }
