@@ -3,6 +3,7 @@ package com.algaworks.algafood.domain.service;
 import com.algaworks.algafood.domain.exception.AtributoInvalidoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class CadastroEstadoService {
-
-    public static final String MSG_ESTADO_NAO_ENCONTRADO = "Não existe um cadastro de estado com o código %d";
     public static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso";
     public static final String EMPTY_FIELD_NAME = "O campo nome não pode ser vazio!";
 
@@ -31,9 +30,7 @@ public class CadastroEstadoService {
 
     public Estado alterar(Estado estado, Long id) {
         Estado estadoAtual = estadoRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
-                ));
+                .orElseThrow(() -> new EstadoNaoEncontradoException(id));
 
         if (Strings.isBlank(estado.getNome())) {
             throw new AtributoInvalidoException(EMPTY_FIELD_NAME);
@@ -47,9 +44,7 @@ public class CadastroEstadoService {
     public void remover(Long id) {
         try {
             Estado estadoAtual = estadoRepository.findById(id)
-                    .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                            String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
-                    ));
+                    .orElseThrow(() -> new EstadoNaoEncontradoException(id));
 
             estadoRepository.delete(estadoAtual);
         } catch (DataIntegrityViolationException e) {
@@ -61,9 +56,7 @@ public class CadastroEstadoService {
 
     public Estado buscarOuFalhar(Long estadoId) {
         return estadoRepository.findById(estadoId)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format(MSG_ESTADO_NAO_ENCONTRADO, estadoId)
-                ));
+                .orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
     }
 
 }
