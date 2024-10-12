@@ -1,10 +1,10 @@
 package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.domain.exception.AtributoInvalidoException;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
@@ -15,13 +15,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @RequiredArgsConstructor
 @Service
 public class CadastroCidadeService {
-
-    public static final String MSG_CIDADE_NAO_ENCONTRADA = "Cidade não encontrada com o código %d";
     public static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser removida, pois está em uso";
 
     private final CidadeRepository cidadeRepository;
@@ -38,14 +34,10 @@ public class CadastroCidadeService {
 
     public Cidade alterar(Cidade cidade, Long id) {
         Cidade cidadeAtual = cidadeRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format("Cidade não encontrada com o código %d", id)
-                ));
+                .orElseThrow(() -> new CidadeNaoEncontradoException(id));
 
         estadoRepository.findById(cidade.getEstado().getId())
-            .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                    String.format("Estado não encontrado com o código %d", cidade.getEstado().getId())
-            ));
+            .orElseThrow(() -> new EstadoNaoEncontradoException(cidade.getEstado().getId()));
 
         if (Strings.isBlank(cidade.getNome())) {
             throw new AtributoInvalidoException(
@@ -62,9 +54,7 @@ public class CadastroCidadeService {
         try {
             cidadeRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format(MSG_CIDADE_NAO_ENCONTRADA, id)
-            );
+            throw new CidadeNaoEncontradoException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_CIDADE_EM_USO, id)
@@ -74,8 +64,6 @@ public class CadastroCidadeService {
 
     public Cidade buscarOuFalhar(Long cidadeId) {
         return cidadeRepository.findById(cidadeId)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format(MSG_CIDADE_NAO_ENCONTRADA, cidadeId)
-                ));
+                .orElseThrow(() -> new CidadeNaoEncontradoException(cidadeId));
     }
 }
