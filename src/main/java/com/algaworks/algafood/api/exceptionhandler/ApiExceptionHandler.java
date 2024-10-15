@@ -141,6 +141,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
+
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status,
                                                         ProblemType problemType,
                                                         String detail) {
