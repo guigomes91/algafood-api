@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,13 +30,13 @@ public class EstadoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado salvar(@RequestBody Estado estado) {
+    public Estado salvar(@RequestBody @Valid Estado estado) {
         return cadastroEstadoService.salvar(estado);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Estado alterar(@RequestBody Estado estado, @PathVariable Long id) {
+    public Estado alterar(@RequestBody @Valid Estado estado, @PathVariable Long id) {
         return cadastroEstadoService.alterar(estado, id);
     }
 

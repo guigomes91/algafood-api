@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class CidadeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade salvar(@RequestBody Cidade cidade) {
+    public Cidade salvar(@RequestBody @Valid Cidade cidade) {
         try {
             return cadastroCidadeService.salvar(cidade);
         } catch (EstadoNaoEncontradoException e) {
@@ -42,7 +43,7 @@ public class CidadeController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cidade alterar(@RequestBody Cidade cidade, @PathVariable Long id) {
+    public Cidade alterar(@RequestBody @Valid Cidade cidade, @PathVariable Long id) {
         try {
             Cidade cidadeAtual = cadastroCidadeService.buscarOuFalhar(id);
             BeanUtils.copyProperties(cidade, cidadeAtual, "id");
