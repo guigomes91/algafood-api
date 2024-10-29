@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
@@ -23,6 +24,7 @@ import java.util.List;
 @Entity
 public class Restaurante extends Id {
 
+    @NotBlank()
     @Column(nullable = false)
     private String nome;
 
