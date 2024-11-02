@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
@@ -11,12 +12,17 @@ import java.math.BigDecimal;
 @Entity
 public class Produto extends Id {
 
+    @NotBlank
     @Column(nullable = false)
     private String nome;
+
+    @NotBlank
     @Column(nullable = false)
     private String descricao;
+
     @Column(nullable = false)
     private BigDecimal preco;
+
     @Column(nullable = false)
     private Boolean ativo;
 
