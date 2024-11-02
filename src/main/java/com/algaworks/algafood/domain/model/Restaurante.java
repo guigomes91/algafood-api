@@ -30,7 +30,7 @@ public class Restaurante extends Id {
     private String nome;
 
     @NotNull
-    @PositiveOrZero
+    @PositiveOrZero(message = "{TaxaFrete.invalida}")
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
