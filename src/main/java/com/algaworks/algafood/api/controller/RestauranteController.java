@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -16,6 +17,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +37,7 @@ public class RestauranteController {
     private final RestauranteRepository restauranteRepository;
     private final CadastroRestauranteService cadastroRestauranteService;
     private final CadastroCozinhaService cadastroCozinhaService;
+    private final SmartValidator validator;
 
     @GetMapping
     public List<Restaurante> listar() {
@@ -80,6 +84,8 @@ public class RestauranteController {
         var restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
 
         merge(campos, restauranteAtual, httpServletRequest);
+        validate(restauranteAtual, "restaurante");
+
         return atualizar(restauranteAtual, id);
     }
 
@@ -106,6 +112,15 @@ public class RestauranteController {
         } catch (IllegalArgumentException ex) {
             Throwable rootCause = ExceptionUtils.getRootCause(ex);
             throw new HttpMessageNotReadableException(ex.getMessage(), rootCause, servletServerHttpRequest);
+        }
+    }
+
+    private void validate(Restaurante restaurante, String objectName) throws ValidacaoException {
+        BeanPropertyBindingResult beanPropertyBindingResult = new BeanPropertyBindingResult(restaurante, objectName);
+        validator.validate(restaurante, beanPropertyBindingResult);
+
+        if (beanPropertyBindingResult.hasErrors()) {
+            throw new ValidacaoException(beanPropertyBindingResult);
         }
     }
 
