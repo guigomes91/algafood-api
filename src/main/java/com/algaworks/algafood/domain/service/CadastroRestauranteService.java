@@ -9,6 +9,7 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class CadastroRestauranteService {
     private final RestauranteRepository restauranteRepository;
     private final CozinhaRepository cozinhaRepository;
 
+    @Transactional
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
         Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
@@ -26,6 +28,7 @@ public class CadastroRestauranteService {
         return restauranteRepository.save(restaurante);
     }
 
+    @Transactional
     public Restaurante alterar(Restaurante restaurante, Long id) {
         Long cozinhaId = restaurante.getCozinha().getId();
         cozinhaRepository.findById(cozinhaId)

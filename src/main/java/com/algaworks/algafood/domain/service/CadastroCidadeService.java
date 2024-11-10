@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class CadastroCidadeService {
     private final EstadoRepository estadoRepository;
     private final CadastroEstadoService cadastroEstadoService;
 
+    @Transactional
     public Cidade salvar(Cidade cidade) {
         Long estadoId = cidade.getEstado().getId();
         Estado estado = cadastroEstadoService.buscarOuFalhar(estadoId);
@@ -32,6 +34,7 @@ public class CadastroCidadeService {
         return cidadeRepository.save(cidade);
     }
 
+    @Transactional
     public Cidade alterar(Cidade cidade, Long id) {
         Cidade cidadeAtual = cidadeRepository.findById(id)
                 .orElseThrow(() -> new CidadeNaoEncontradoException(id));

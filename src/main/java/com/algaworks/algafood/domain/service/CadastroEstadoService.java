@@ -10,6 +10,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -19,6 +20,7 @@ public class CadastroEstadoService {
 
     private final EstadoRepository estadoRepository;
 
+    @Transactional
     public Estado salvar(Estado estado) {
         if (Strings.isBlank(estado.getNome())) {
             throw new AtributoInvalidoException(EMPTY_FIELD_NAME);
@@ -27,6 +29,7 @@ public class CadastroEstadoService {
         return estadoRepository.save(estado);
     }
 
+    @Transactional
     public Estado alterar(Estado estado, Long id) {
         Estado estadoAtual = estadoRepository.findById(id)
                 .orElseThrow(() -> new EstadoNaoEncontradoException(id));
