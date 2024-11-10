@@ -1,7 +1,9 @@
 package com.algaworks.algafood;
 
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.util.DatabaseCleaner;
 import com.algaworks.algafood.util.ResourceUtils;
 import io.restassured.RestAssured;
@@ -14,17 +16,16 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
-class CadastroCozinhaIT {
+class CadastroRestauranteIT {
 
-    public static final int COZINHA_ID_INEXISTENTE = 100;
     @LocalServerPort
     private int port;
 
@@ -32,24 +33,25 @@ class CadastroCozinhaIT {
     private DatabaseCleaner databaseCleaner;
 
     @Autowired
+    private RestauranteRepository restauranteRepository;
+
+    @Autowired
     private CozinhaRepository cozinhaRepository;
 
-    private Cozinha cozinha;
-
-    private int totalDeCozinhas;
+    private int totalDeRestaurantes;
 
     @BeforeEach
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = port;
-        RestAssured.basePath = "/cozinhas";
+        RestAssured.basePath = "/restaurantes";
 
         databaseCleaner.clearTables();
         prepararDados();
     }
 
     @Test
-    void deveRetornarStatus200_QuandoConsultarCozinhas() {
+    void deveRetornarStatus200_QuandoConsultarRestaurantes() {
         given()
                 .accept(ContentType.JSON)
                 .when()
@@ -59,19 +61,19 @@ class CadastroCozinhaIT {
     }
 
     @Test
-    void deveConter2Cozinhas_QuandoConsultarCozinhas() {
+    void deveConterDoisRestaurantes_QuandoConsultarRestaurantes() {
         given()
                 .accept(ContentType.JSON)
                 .when()
                 .get()
                 .then()
-                .body("", hasSize(this.totalDeCozinhas))
-                .body("nome", hasItems("Americana", "Tailandesa"));
+                .body("", hasSize(this.totalDeRestaurantes))
+                .body("nome", hasItems("Fafa de Belem", "Manoel Gomi"));
     }
 
     @Test
-    void deveRetornarStatus201_QuandoCadastrarCozinha() {
-        var cadastroCozinhaJson = ResourceUtils.getContentFromResource("/json/cadastro-cozinha.json");
+    void deveRetornarStatus201_QuandoCadastrarRestaurante() {
+        var cadastroCozinhaJson = ResourceUtils.getContentFromResource("/json/cadastro-restaurante.json");
 
         given()
                 .body(cadastroCozinhaJson)
@@ -83,42 +85,29 @@ class CadastroCozinhaIT {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @Test
-    void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
-        given()
-                .pathParam("cozinhaId", cozinha.getId())
-                .accept(ContentType.JSON)
-                .when()
-                .get("/{cozinhaId}")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("nome", equalTo(cozinha.getNome()));
-    }
-
-    @Test
-    void deveRetornarRespostaStatus404_QuandoConsultarCozinhaInexistente() {
-        given()
-                .pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
-                .accept(ContentType.JSON)
-                .when()
-                .get("/{cozinhaId}")
-                .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
     private void prepararDados() {
-        List<Cozinha> cozinhas = new ArrayList<>();
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNome("Fafa de Belem");
+        restaurante.setTaxaFrete(BigDecimal.valueOf(20));
+
         Cozinha cozinha = new Cozinha();
         cozinha.setNome("Tailandesa");
-        cozinhaRepository.save(cozinha);
-        cozinhas.add(cozinha);
+        var cozinhaNew = cozinhaRepository.save(cozinha);
+        restaurante.setCozinha(cozinhaNew);
 
-        Cozinha cozinha2 = new Cozinha();
-        cozinha2.setNome("Americana");
-        cozinhaRepository.save(cozinha2);
-        cozinhas.add(cozinha2);
+        restauranteRepository.save(restaurante);
 
-        this.cozinha = cozinha2;
-        this.totalDeCozinhas = cozinhas.size();
+        restaurante = new Restaurante();
+        restaurante.setNome("Manoel Gomi");
+        restaurante.setTaxaFrete(BigDecimal.TEN);
+
+        cozinha = new Cozinha();
+        cozinha.setNome("Tailandesa");
+        cozinhaNew = cozinhaRepository.save(cozinha);
+        restaurante.setCozinha(cozinhaNew);
+
+        restauranteRepository.save(restaurante);
+
+        this.totalDeRestaurantes = (int) restauranteRepository.count();
     }
 }
