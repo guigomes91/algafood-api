@@ -4,6 +4,7 @@ import com.algaworks.algafood.core.validation.Groups;
 import com.algaworks.algafood.core.validation.Multiplo;
 import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -40,9 +41,8 @@ public class Restaurante  {
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    //@JsonIgnore
-    //@JsonIgnoreProperties("hibernateLazyInitializer")
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = "nome", allowGetters = true)
+    @ManyToOne
     @JoinColumn(name = "cozinha_id", nullable = false)
     @NotNull
     @Valid
