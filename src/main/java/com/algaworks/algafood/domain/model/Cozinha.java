@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonRootName(value = "cozinha")
@@ -24,7 +25,6 @@ public class Cozinha {
     @Column(length = 30, nullable = false)
     private String nome;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "cozinha")
-    private List<Restaurante> restaurantes;
+    private List<Restaurante> restaurantes = new ArrayList<>();
 }
