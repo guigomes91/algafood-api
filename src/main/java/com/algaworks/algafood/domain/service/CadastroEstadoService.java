@@ -43,12 +43,14 @@ public class CadastroEstadoService {
         return estadoRepository.save(estadoAtual);
     }
 
+    @Transactional
     public void remover(Long id) {
         try {
             Estado estadoAtual = estadoRepository.findById(id)
                     .orElseThrow(() -> new EstadoNaoEncontradoException(id));
 
             estadoRepository.delete(estadoAtual);
+            estadoRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_ESTADO_EM_USO, id)
