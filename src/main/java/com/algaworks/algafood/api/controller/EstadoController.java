@@ -1,5 +1,10 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.EstadoInputDisassembler;
+import com.algaworks.algafood.api.assembler.EstadoModelAssembler;
+import com.algaworks.algafood.api.model.EstadoModel;
+import com.algaworks.algafood.api.model.input.EstadoInput;
+import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
@@ -17,27 +22,34 @@ public class EstadoController {
 
     private final EstadoRepository estadoRepository;
     private final CadastroEstadoService cadastroEstadoService;
+    private final EstadoModelAssembler estadoModelAssembler;
+    private final EstadoInputDisassembler estadoInputDisassembler;
 
     @GetMapping
-    public List<Estado> listar() {
-        return estadoRepository.findAll();
+    public List<EstadoModel> listar() {
+        return estadoModelAssembler.toCollectionModel(estadoRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public Estado buscar(@PathVariable Long id) {
-        return cadastroEstadoService.buscarOuFalhar(id);
+    public EstadoModel buscar(@PathVariable Long id) {
+        return estadoModelAssembler.toModel(cadastroEstadoService.buscarOuFalhar(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado salvar(@RequestBody @Valid Estado estado) {
-        return cadastroEstadoService.salvar(estado);
+    public EstadoModel salvar(@RequestBody @Valid EstadoInput estadoInput) {
+        var estado = estadoInputDisassembler.toDomainObject(estadoInput);
+
+        return estadoModelAssembler.toModel(cadastroEstadoService.salvar(estado));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Estado alterar(@RequestBody @Valid Estado estado, @PathVariable Long id) {
-        return cadastroEstadoService.alterar(estado, id);
+    public EstadoModel alterar(@RequestBody @Valid EstadoInput estadoInput, @PathVariable Long id) {
+        Estado estado = cadastroEstadoService.buscarOuFalhar(id);
+        estadoInputDisassembler.copyToDomainObject(estadoInput, estado);
+
+        return estadoModelAssembler.toModel(cadastroEstadoService.alterar(estado, id));
     }
 
     @DeleteMapping("/{id}")
