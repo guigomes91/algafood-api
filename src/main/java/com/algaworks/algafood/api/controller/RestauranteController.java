@@ -74,10 +74,8 @@ public class RestauranteController {
     @ResponseStatus(HttpStatus.OK)
     public RestauranteModel atualizar(@RequestBody @Valid RestauranteInput restauranteInput, @PathVariable Long id) {
         try {
-            Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
             Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
-
-            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+            restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
             final var restauranteNovo = cadastroRestauranteService.salvar(restauranteAtual);
             return restauranteModelAssembler.toModel(restauranteNovo);

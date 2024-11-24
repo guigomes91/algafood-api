@@ -1,9 +1,6 @@
 package com.algaworks.algafood.domain.model;
 
 import com.algaworks.algafood.core.validation.Groups;
-import com.algaworks.algafood.core.validation.Multiplo;
-import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,8 +17,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@ValorZeroIncluiDescricao(valorField = "taxaFrete",
-        descricaoField = "nome", descricaoObrigatoria = "Frete gratis")
 @Data
 @Entity
 public class Restaurante {
@@ -35,7 +30,6 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-    @Multiplo(numero = 5)
     @PositiveOrZero
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
