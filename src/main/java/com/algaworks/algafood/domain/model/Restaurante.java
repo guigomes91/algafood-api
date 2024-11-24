@@ -24,7 +24,7 @@ import java.util.List;
         descricaoField = "nome", descricaoObrigatoria = "Frete gratis")
 @Data
 @Entity
-public class Restaurante  {
+public class Restaurante {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,8 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
+import com.algaworks.algafood.api.model.RestauranteModel;
+import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -12,6 +15,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -36,6 +40,7 @@ public class RestauranteController {
 
     private final RestauranteRepository restauranteRepository;
     private final CadastroRestauranteService cadastroRestauranteService;
+    private final RestauranteModelAssembler restauranteModelAssembler;
     private final CadastroCozinhaService cadastroCozinhaService;
     private final SmartValidator validator;
 
@@ -45,15 +50,19 @@ public class RestauranteController {
     }
 
     @GetMapping(value = "/{id}")
-    public Restaurante buscar(@PathVariable Long id) {
-        return cadastroRestauranteService.buscarOuFalhar(id);
+    public RestauranteModel buscar(@PathVariable Long id) {
+        final var restaurante = cadastroRestauranteService.buscarOuFalhar(id);
+        return restauranteModelAssembler.toModel(restaurante);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+    public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            return cadastroRestauranteService.salvar(restaurante);
+            Restaurante restaurante = toDomainObject(restauranteInput);
+            final var restauranteNovo = cadastroRestauranteService.salvar(restaurante);
+
+            return restauranteModelAssembler.toModel(restauranteNovo);
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -61,19 +70,21 @@ public class RestauranteController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Restaurante atualizar(@RequestBody @Valid Restaurante restaurante, @PathVariable Long id) {
-        Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(id);
-        restaurante.setCozinha(cozinha);
-
+    public RestauranteModel atualizar(@RequestBody @Valid RestauranteInput restauranteInput, @PathVariable Long id) {
         try {
-            return cadastroRestauranteService.alterar(restaurante, id);
+            Restaurante restaurante = toDomainObject(restauranteInput);
+            Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
+
+            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+
+            final var restauranteNovo = cadastroRestauranteService.salvar(restauranteAtual);
+            return restauranteModelAssembler.toModel(restauranteNovo);
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
-
     }
 
-    @PatchMapping("/{id}")
+    /*@PatchMapping("/{id}")
     public Restaurante atualizarParcial(@PathVariable Long id,
                                         @RequestBody Map<String, Object> campos,
                                         HttpServletRequest httpServletRequest) {
@@ -82,7 +93,7 @@ public class RestauranteController {
         merge(campos, restauranteAtual, httpServletRequest);
         validate(restauranteAtual, "restaurante");
 
-        return atualizar(restauranteAtual, id);
+        return atualizar(restauranteAtual);
     }
 
     private static void merge(
@@ -109,43 +120,17 @@ public class RestauranteController {
             Throwable rootCause = ExceptionUtils.getRootCause(ex);
             throw new HttpMessageNotReadableException(ex.getMessage(), rootCause, servletServerHttpRequest);
         }
-    }
+    }*/
 
-    private void validate(Restaurante restaurante, String objectName) throws ValidacaoException {
-        BeanPropertyBindingResult beanPropertyBindingResult = new BeanPropertyBindingResult(restaurante, objectName);
-        validator.validate(restaurante, beanPropertyBindingResult);
+    private Restaurante toDomainObject(RestauranteInput restauranteInput) {
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNome(restauranteInput.getNome());
+        restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
 
-        if (beanPropertyBindingResult.hasErrors()) {
-            throw new ValidacaoException(beanPropertyBindingResult);
-        }
-    }
+        Cozinha cozinha = new Cozinha();
+        cozinha.setId(restauranteInput.getCozinha().getId());
+        restaurante.setCozinha(cozinha);
 
-    @GetMapping("/por-taxa")
-    public List<Restaurante> restaurantesPorTaxaFrete(
-            @RequestParam("nome") @Nullable String nome,
-            @RequestParam("taxaInicial") @Nullable BigDecimal taxaInicial,
-            @RequestParam("taxaFinal") @Nullable BigDecimal taxaFinal
-    ) {
-        return restauranteRepository.find(nome, taxaInicial, taxaFinal);
-    }
-
-    @GetMapping("/por-nome")
-    public List<Restaurante> restaurantesPorNomeECozinha(
-            @RequestParam("nome") String nome,
-            @RequestParam("cozinha") Long cozinha
-    ) {
-        return restauranteRepository.consultarPorNome(nome, cozinha);
-    }
-
-    @GetMapping("/com-frete-gratis")
-    public List<Restaurante> restaurantesComTaxaFreteGratis(
-            @RequestParam("nome") @Nullable String nome
-    ) {
-        return restauranteRepository.findComFreteGratis(nome);
-    }
-
-    @GetMapping("/primeiro")
-    public Optional<Restaurante> restaurantePrimeiro() {
-        return restauranteRepository.buscarPrimeiro();
+        return  restaurante;
     }
 }
