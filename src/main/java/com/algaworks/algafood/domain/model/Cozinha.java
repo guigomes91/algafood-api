@@ -1,7 +1,6 @@
 package com.algaworks.algafood.domain.model;
 
 import com.algaworks.algafood.core.validation.Groups;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -27,6 +26,5 @@ public class Cozinha {
     private String nome;
 
     @OneToMany(mappedBy = "cozinha")
-    @JsonBackReference
     private List<Restaurante> restaurantes = new ArrayList<>();
 }

@@ -45,7 +45,6 @@ public class Restaurante  {
     @NotNull
     @Valid
     @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
-    @JsonManagedReference
     private Cozinha cozinha;
 
     @Embedded
