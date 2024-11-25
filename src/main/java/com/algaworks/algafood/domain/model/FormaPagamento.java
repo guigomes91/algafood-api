@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "forma_pagamento")
 public class FormaPagamento extends Id {
 
-    @NotBlank
     @Column(nullable = false)
     private String descricao;
 }
