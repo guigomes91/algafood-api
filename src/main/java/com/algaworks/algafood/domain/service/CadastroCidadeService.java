@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.domain.exception.AtributoInvalidoException;
-import com.algaworks.algafood.domain.exception.CidadeNaoEncontradoException;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -37,7 +37,7 @@ public class CadastroCidadeService {
     @Transactional
     public Cidade alterar(Cidade cidade, Long id) {
         Cidade cidadeAtual = cidadeRepository.findById(id)
-                .orElseThrow(() -> new CidadeNaoEncontradoException(id));
+                .orElseThrow(() -> new CidadeNaoEncontradaException(id));
 
         estadoRepository.findById(cidade.getEstado().getId())
             .orElseThrow(() -> new EstadoNaoEncontradoException(cidade.getEstado().getId()));
@@ -59,7 +59,7 @@ public class CadastroCidadeService {
             cidadeRepository.deleteById(id);
             cidadeRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw new CidadeNaoEncontradoException(id);
+            throw new CidadeNaoEncontradaException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_CIDADE_EM_USO, id)
@@ -69,6 +69,6 @@ public class CadastroCidadeService {
 
     public Cidade buscarOuFalhar(Long cidadeId) {
         return cidadeRepository.findById(cidadeId)
-                .orElseThrow(() -> new CidadeNaoEncontradoException(cidadeId));
+                .orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
     }
 }
