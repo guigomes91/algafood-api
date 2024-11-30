@@ -50,7 +50,7 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UsuarioModel alterar(@RequestBody @Valid UsuarioInput usuarioInput, @PathVariable Long id) {
         try {
