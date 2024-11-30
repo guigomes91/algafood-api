@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class GrupoController {
         try {
             final var grupo = grupoModelDisassembler.toDomainObject(grupoInput);
             return grupoModelAssembler.toModel(cadastroGrupoService.salvar(grupo));
-        } catch (GrupoNaoEncontradoException e) {
+        } catch (ConstraintViolationException e) {
             throw new NegocioException(e.getMessage());
         }
     }
