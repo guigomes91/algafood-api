@@ -10,10 +10,14 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Usuario extends Id {
+public class Usuario {
+
+    @EqualsAndHashCode.Include
+    @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     @Column(nullable = false)

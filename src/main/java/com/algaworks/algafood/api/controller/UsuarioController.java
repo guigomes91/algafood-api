@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import com.algaworks.algafood.api.assembler.UsuarioModelAssembler;
 import com.algaworks.algafood.api.assembler.UsuarioModelDisassembler;
 import com.algaworks.algafood.api.model.UsuarioModel;
+import com.algaworks.algafood.api.model.input.UsuarioComSenhaInput;
 import com.algaworks.algafood.api.model.input.UsuarioInput;
 import com.algaworks.algafood.api.model.input.UsuarioSenhaInput;
 import com.algaworks.algafood.domain.exception.GrupoNaoEncontradoException;
@@ -40,7 +41,7 @@ public class UsuarioController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioModel salvar(@RequestBody @Valid UsuarioInput usuarioInput) {
+    public UsuarioModel salvar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput) {
         try {
             final var usuario = usuarioModelDisassembler.toDomainObject(usuarioInput);
             return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuario));
@@ -61,7 +62,7 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/{id}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void alterarSenha(@RequestBody @Valid UsuarioSenhaInput usuarioInput, @PathVariable Long id) {
         Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(id);
