@@ -1,8 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
-import com.algaworks.algafood.api.model.CidadeModel;
-import com.algaworks.algafood.api.model.EstadoModel;
-import com.algaworks.algafood.domain.model.Estado;
+import com.algaworks.algafood.api.model.UsuarioModel;
+import com.algaworks.algafood.domain.model.Usuario;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -12,16 +11,16 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
-public class EstadoModelAssembler {
+public class UsuarioModelAssembler {
 
     private final ModelMapper modelMapper;
 
-    public EstadoModel toModel(Estado estado) {
-        return modelMapper.map(estado, EstadoModel.class);
+    public UsuarioModel toModel(Usuario usuario) {
+        return modelMapper.map(usuario, UsuarioModel.class);
     }
 
-    public List<EstadoModel> toCollectionModel(List<Estado> estados) {
-        return estados.stream()
+    public List<UsuarioModel> toCollectionModel(List<Usuario> usuarios) {
+        return usuarios.stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }

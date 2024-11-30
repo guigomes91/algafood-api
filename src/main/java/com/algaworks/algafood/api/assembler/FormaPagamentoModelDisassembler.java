@@ -1,9 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
-import com.algaworks.algafood.api.model.input.CidadeInput;
 import com.algaworks.algafood.api.model.input.FormaPagamentoInput;
 import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

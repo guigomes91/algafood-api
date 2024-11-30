@@ -25,7 +25,7 @@ public class Pedido extends Id {
 
     @ManyToOne
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
-    private Usuario cliente;
+    private Cidade cliente;
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens = new ArrayList<>();
