@@ -23,6 +23,7 @@ public class CadastroRestauranteService {
     private final CadastroCidadeService cadastroCidadeService;
     private final CadastroFormaPagamentoService cadastroFormaPagamentoService;
     private final CadastroProdutoService cadastroProdutoService;
+    private final CadastroUsuarioService cadastroUsuarioService;
 
     @Transactional
     public Restaurante salvar(Restaurante restaurante) {
@@ -102,6 +103,22 @@ public class CadastroRestauranteService {
         produto.setRestaurante(restaurante);
 
         return cadastroProdutoService.salvar(produto);
+    }
+
+    @Transactional
+    public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+        var restaurante = buscarOuFalhar(restauranteId);
+        var usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
+
+        restaurante.removerResponsavel(usuario);
+    }
+
+    @Transactional
+    public void associarResponsavel(Long restauranteId, Long usuarioId) {
+        var restaurante = buscarOuFalhar(restauranteId);
+        var usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
+
+        restaurante.adicionarResponsavel(usuario);
     }
 
     public Restaurante buscarOuFalhar(Long restauranteId) {
