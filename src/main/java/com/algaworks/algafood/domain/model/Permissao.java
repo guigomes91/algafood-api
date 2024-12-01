@@ -5,11 +5,17 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Permissao extends Id {
+public class Permissao {
+
+    @EqualsAndHashCode.Include
+    @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String nome;

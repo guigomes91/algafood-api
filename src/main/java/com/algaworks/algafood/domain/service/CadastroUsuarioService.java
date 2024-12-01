@@ -20,6 +20,7 @@ public class CadastroUsuarioService {
     public static final String MSG_USUARIO_EM_USO = "Usuário de código %d não pode ser removido, pois está em uso";
 
     private final UsuarioRepository usuarioRepository;
+    private final CadastroGrupoService cadastroGrupoService;
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
@@ -69,5 +70,21 @@ public class CadastroUsuarioService {
     public Usuario buscarOuFalhar(Long usuarioId) {
         return usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
+    }
+
+    @Transactional
+    public void desassociarGrupo(Long usuarioId, Long grupoId) {
+        var usuario = buscarOuFalhar(usuarioId);
+        var grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
+
+        usuario.removerGrupo(grupo);
+    }
+
+    @Transactional
+    public void associarGrupo(Long usuarioId, Long grupoId) {
+        var usuario = buscarOuFalhar(usuarioId);
+        var grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
+
+        usuario.adicionarGrupo(grupo);
     }
 }
