@@ -65,11 +65,11 @@ public class Restaurante {
     }
 
     public void fechar() {
-        setAtivo(false);
+        setAberto(false);
     }
 
     public void abrir() {
-        setAtivo(true);
+        setAberto(true);
     }
 
     public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
