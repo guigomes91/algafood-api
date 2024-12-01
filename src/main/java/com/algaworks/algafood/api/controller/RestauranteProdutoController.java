@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,8 +40,20 @@ public class RestauranteProdutoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoModel adicionar(@PathVariable Long restauranteId,
-                          @RequestBody ProdutoInput produtoInput) {
+                          @RequestBody @Valid ProdutoInput produtoInput) {
         var produto = produtoModelDisassembler.toDomainObject(produtoInput);
+        var produtoNew = cadastroRestauranteService.adicionarProduto(restauranteId, produto);
+        return produtoModelAssembler.toModel(produtoNew);
+    }
+
+    @PutMapping("/{produtoId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProdutoModel adicionar(@PathVariable Long restauranteId,
+                                  @PathVariable Long produtoId,
+                                  @RequestBody @Valid ProdutoInput produtoInput) {
+        var produto = cadastroProdutoService.buscarOuFalhar(produtoId, restauranteId);
+        produtoModelDisassembler.copyToDomainObject(produtoInput, produto);
+
         var produtoNew = cadastroRestauranteService.adicionarProduto(restauranteId, produto);
         return produtoModelAssembler.toModel(produtoNew);
     }
