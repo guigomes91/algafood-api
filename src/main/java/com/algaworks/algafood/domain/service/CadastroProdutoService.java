@@ -43,8 +43,8 @@ public class CadastroProdutoService {
         }
     }
 
-    public Produto buscarOuFalhar(Long produtoId) {
-        return produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new ProdutoNaoEncontradoException(produtoId));
+    public Produto buscarOuFalhar(Long produtoId, Long restauranteId) {
+        return produtoRepository.findByIdAndRestauranteId(produtoId, restauranteId)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException(produtoId, restauranteId));
     }
 }

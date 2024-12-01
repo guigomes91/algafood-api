@@ -4,6 +4,7 @@ import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -82,11 +83,11 @@ public class CadastroRestauranteService {
     }
 
     @Transactional
-    public void adicionarProduto(Long restauranteId, Long produtoId) {
+    public Produto adicionarProduto(Long restauranteId, Produto produto) {
         var restaurante = buscarOuFalhar(restauranteId);
-        var produto = cadastroProdutoService.buscarOuFalhar(produtoId);
+        produto.setRestaurante(restaurante);
 
-        restaurante.adicionarProduto(produto);
+        return cadastroProdutoService.salvar(produto);
     }
 
     public Restaurante buscarOuFalhar(Long restauranteId) {
