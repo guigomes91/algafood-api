@@ -13,6 +13,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CadastroRestauranteService {
@@ -119,6 +121,16 @@ public class CadastroRestauranteService {
         var usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
         restaurante.adicionarResponsavel(usuario);
+    }
+
+    @Transactional
+    public void ativar(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::ativar);
+    }
+
+    @Transactional
+    public void inativar(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::inativar);
     }
 
     public Restaurante buscarOuFalhar(Long restauranteId) {
