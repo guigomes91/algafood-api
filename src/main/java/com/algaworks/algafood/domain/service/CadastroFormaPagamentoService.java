@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CadastroFormaPagamentoService {
     public static final String MSG_FORMA_PAGAMENTO_EM_USO = "Forma de pagamento de código %d não pode ser removida, pois está em uso";
-    private FormaPagamentoRepository formaPagamentoRepository;
+    private final FormaPagamentoRepository formaPagamentoRepository;
 
     @Transactional
     public FormaPagamento salvar(FormaPagamento formaPagamento) {

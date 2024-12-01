@@ -7,10 +7,14 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Produto extends Id {
+public class Produto {
+
+    @EqualsAndHashCode.Include
+    @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     @Column(nullable = false)

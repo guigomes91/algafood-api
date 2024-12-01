@@ -20,6 +20,8 @@ public class CadastroRestauranteService {
     private final CozinhaRepository cozinhaRepository;
     private final CadastroCozinhaService cadastroCozinhaService;
     private final CadastroCidadeService cadastroCidadeService;
+    private final CadastroFormaPagamentoService cadastroFormaPagamentoService;
+    private final CadastroProdutoService cadastroProdutoService;
 
     @Transactional
     public Restaurante salvar(Restaurante restaurante) {
@@ -61,6 +63,30 @@ public class CadastroRestauranteService {
         var restauranteAtual = buscarOuFalhar(restauranteId);
 
         restauranteAtual.inativar();
+    }
+
+    @Transactional
+    public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+        var restaurante = buscarOuFalhar(restauranteId);
+        var formaPagamento = cadastroFormaPagamentoService.buscarOuFalhar(formaPagamentoId);
+
+        restaurante.removerFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+        var restaurante = buscarOuFalhar(restauranteId);
+        var formaPagamento = cadastroFormaPagamentoService.buscarOuFalhar(formaPagamentoId);
+
+        restaurante.adicionarFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void adicionarProduto(Long restauranteId, Long produtoId) {
+        var restaurante = buscarOuFalhar(restauranteId);
+        var produto = cadastroProdutoService.buscarOuFalhar(produtoId);
+
+        restaurante.adicionarProduto(produto);
     }
 
     public Restaurante buscarOuFalhar(Long restauranteId) {
