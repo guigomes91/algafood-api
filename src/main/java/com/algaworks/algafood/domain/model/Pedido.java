@@ -10,10 +10,14 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Pedido extends Id {
+public class Pedido {
+
+    @EqualsAndHashCode.Include
+    @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @JoinColumn(name = "forma_pagamento_id", nullable = false)
     @ManyToOne
@@ -53,5 +57,5 @@ public class Pedido extends Id {
 
     @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
-    private StatusPedido status;
+    private StatusPedido status = StatusPedido.CRIADO;
 }
