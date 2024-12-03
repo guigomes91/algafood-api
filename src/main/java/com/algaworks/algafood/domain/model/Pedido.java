@@ -20,7 +20,7 @@ public class Pedido {
     private Long id;
 
     @JoinColumn(name = "forma_pagamento_id", nullable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private FormaPagamento formaPagamento;
 
     @JoinColumn(name = "restaurante_id", nullable = false)
