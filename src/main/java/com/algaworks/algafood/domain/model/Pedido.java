@@ -58,4 +58,8 @@ public class Pedido {
     @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.CRIADO;
+
+    public void calcularValorTotal() {
+
+    }
 }
