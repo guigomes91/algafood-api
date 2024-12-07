@@ -29,9 +29,9 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
-    private Cidade cliente;
+    private Usuario cliente;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
     @Embedded
@@ -60,6 +60,10 @@ public class Pedido {
     private StatusPedido status = StatusPedido.CRIADO;
 
     public void calcularValorTotal() {
-
+        this.valorTotal = itens.stream()
+                .map(itemPedido -> itemPedido.getProduto().getPreco()
+                        .multiply(BigDecimal.valueOf(itemPedido.getQuantidade())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.subtotal = this.valorTotal;
     }
 }

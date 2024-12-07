@@ -22,7 +22,7 @@ public class PedidoInput {
 
     @Valid
     @NotNull
-    private EnderecoInput endereco;
+    private EnderecoInput enderecoEntrega;
 
     @Valid
     @NotNull
