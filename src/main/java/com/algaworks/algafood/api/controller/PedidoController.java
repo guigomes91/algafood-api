@@ -8,7 +8,7 @@ import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
-import com.algaworks.algafood.domain.service.CadastroPedidoService;
+import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/pedidos")
 public class PedidoController {
 
-    private final CadastroPedidoService cadastroPedidoService;
+    private final EmissaoPedidoService emissaoPedidoService;
     private final PedidoRepository pedidoRepository;
     private final PedidoModelAssembler pedidoModelAssembler;
     private final PedidoModelDisassembler pedidoModelDisassembler;
@@ -34,7 +34,7 @@ public class PedidoController {
 
     @GetMapping("/{pedidoId}")
     public PedidoModel buscar(@PathVariable Long pedidoId) {
-        return pedidoModelAssembler.toModel(cadastroPedidoService.buscarOuFalhar(pedidoId));
+        return pedidoModelAssembler.toModel(emissaoPedidoService.buscarOuFalhar(pedidoId));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -43,7 +43,7 @@ public class PedidoController {
         var pedido = pedidoModelDisassembler.toDomainObject(pedidoInput);
         pedido.setCliente(new Usuario());
         pedido.getCliente().setId(1L);
-        var novoPedido = cadastroPedidoService.salvar(pedido);
+        var novoPedido = emissaoPedidoService.salvar(pedido);
 
         return pedidoModelAssembler.toModel(novoPedido);
     }

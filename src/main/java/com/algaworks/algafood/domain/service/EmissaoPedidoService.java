@@ -5,18 +5,14 @@ import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 @Service
-public class CadastroPedidoService {
+public class EmissaoPedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final CadastroRestauranteService cadastroRestauranteService;
