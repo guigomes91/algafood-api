@@ -20,6 +20,8 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String codigo;
+
     @JoinColumn(name = "forma_pagamento_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private FormaPagamento formaPagamento;

@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class PedidoModel {
 
-    private Long id;
+    private String codigo;
     private FormaPagamentoModel formaPagamento;
     private RestauranteResumoModel restaurante;
     private UsuarioModel cliente;
