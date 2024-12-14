@@ -4,6 +4,8 @@ import com.algaworks.algafood.api.assembler.ProdutoModelAssembler;
 import com.algaworks.algafood.api.assembler.ProdutoModelDisassembler;
 import com.algaworks.algafood.api.model.ProdutoModel;
 import com.algaworks.algafood.api.model.input.ProdutoInput;
+import com.algaworks.algafood.domain.model.Produto;
+import com.algaworks.algafood.domain.repository.ProdutoRepository;
 import com.algaworks.algafood.domain.service.CadastroProdutoService;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +20,25 @@ import java.util.List;
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
 public class RestauranteProdutoController {
 
+    private final ProdutoRepository produtoRepository;
     private final CadastroRestauranteService cadastroRestauranteService;
     private final CadastroProdutoService cadastroProdutoService;
     private final ProdutoModelAssembler produtoModelAssembler;
     private final ProdutoModelDisassembler produtoModelDisassembler;
 
     @GetMapping
-    public List<ProdutoModel> listar(@PathVariable Long restauranteId) {
+    public List<ProdutoModel> listar(@PathVariable Long restauranteId,
+                                     @RequestParam(required = false) boolean incluirInativos) {
         var restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
+        List<Produto> produtos = null;
 
-        return produtoModelAssembler.toCollectionModel(restaurante.getProdutos());
+        if (incluirInativos) {
+            produtos = restaurante.getProdutos();
+        } else {
+            produtos = produtoRepository.findAtivosByRestaurante(restaurante);
+        }
+
+        return produtoModelAssembler.toCollectionModel(produtos);
     }
 
     @GetMapping("/{produtoId}")
