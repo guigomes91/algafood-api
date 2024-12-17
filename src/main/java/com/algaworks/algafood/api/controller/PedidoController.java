@@ -6,11 +6,13 @@ import com.algaworks.algafood.api.assembler.PedidoResumoModelAssembler;
 import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
+import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
+import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,8 +35,10 @@ public class PedidoController {
     private final PedidoResumoModelAssembler pedidoResumoModelAssembler;
 
     @GetMapping
-    public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
-        final var pedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
+    public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro,
+                                             @PageableDefault(size = 10) Pageable pageable) {
+        pageable = traduzirPageable(pageable);
+        var pedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
         var pedidosModel = pedidoResumoModelAssembler.toCollectionModel(pedidos.getContent());
 
         return new PageImpl<>(pedidosModel, pageable, pedidos.getTotalElements());
@@ -54,5 +58,16 @@ public class PedidoController {
         var novoPedido = emissaoPedidoService.salvar(pedido);
 
         return pedidoModelAssembler.toModel(novoPedido);
+    }
+
+    private Pageable traduzirPageable(Pageable apiPageable) {
+        var mapeamento = ImmutableMap.of(
+                "codigo", "codigo",
+                "restaurante.nome", "restaurante.nome",
+                "nomeCliente", "cliente.nome",
+                "valorTotal", "valorTotal"
+        );
+
+        return PageableTranslator.translate(apiPageable, mapeamento);
     }
 }
