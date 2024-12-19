@@ -15,10 +15,10 @@ import java.util.List;
 @RequestMapping(path = "/estatisticas")
 public class EstatisticasController {
 
-    private VendaQueryService vendaQueryService;
+    private final VendaQueryService vendaQueryService;
 
     @GetMapping("/vendas-diarias")
     public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter vendaDiariaFilter) {
-        return vendaQueryService.consultarVendasDiarias(filtro);
+        return vendaQueryService.consultarVendasDiarias(vendaDiariaFilter);
     }
 }
