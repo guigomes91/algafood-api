@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CadastroProdutoService {
     public static final String MSG_PRODUTO_EM_USO = "Produto de código %d não pode ser removido, pois está em uso";
     private final ProdutoRepository produtoRepository;
+
     @Transactional
     public Produto salvar(Produto produto) {
         return produtoRepository.save(produto);

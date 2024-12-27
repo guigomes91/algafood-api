@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FotoProdutoModelAssembler {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public FotoProdutoModel toModel(FotoProduto foto) {
         return modelMapper.map(foto, FotoProdutoModel.class);
