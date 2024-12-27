@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProdutoRepository extends CustomJpaRepository<Produto, Long> {
+public interface ProdutoRepository extends CustomJpaRepository<Produto, Long>, ProdutoRepositoryQueries {
 
     Optional<Produto> findByIdAndRestauranteId(Long id, Long restauranteId);
 
