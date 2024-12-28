@@ -17,7 +17,6 @@ public interface FotoStorageService {
     @Builder
     @Getter
     class NovaFoto {
-
         private String nomeAquivo;
         private InputStream inputStream;
     }

@@ -14,7 +14,6 @@ import java.util.Optional;
 public class CatalogoFotoProdutoService {
 
     private final ProdutoRepository produtoRepository;
-
     private final FotoStorageService fotoStorage;
 
     @Transactional
@@ -26,9 +25,7 @@ public class CatalogoFotoProdutoService {
         Optional<FotoProduto> fotoExistente = produtoRepository
                 .findFotoById(restauranteId, produtoId);
 
-        if (fotoExistente.isPresent()) {
-            produtoRepository.delete(fotoExistente.get());
-        }
+        fotoExistente.ifPresent(produtoRepository::delete);
 
         foto.setNomeArquivo(nomeNovoArquivo);
         foto =  produtoRepository.save(foto);
