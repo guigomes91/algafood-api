@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -14,10 +15,13 @@ public class CatalogoFotoProdutoService {
 
     private final ProdutoRepository produtoRepository;
 
+    private final FotoStorageService fotoStorage;
+
     @Transactional
-    public FotoProduto salvar(FotoProduto foto) {
+    public FotoProduto salvar(FotoProduto foto, InputStream dadosArquivo) {
         Long restauranteId = foto.getRestauranteId();
         Long produtoId = foto.getProduto().getId();
+        String nomeNovoArquivo = fotoStorage.gerarNomeArquivo(foto.getNomeArquivo());
 
         Optional<FotoProduto> fotoExistente = produtoRepository
                 .findFotoById(restauranteId, produtoId);
@@ -26,6 +30,17 @@ public class CatalogoFotoProdutoService {
             produtoRepository.delete(fotoExistente.get());
         }
 
-        return produtoRepository.save(foto);
+        foto.setNomeArquivo(nomeNovoArquivo);
+        foto =  produtoRepository.save(foto);
+        produtoRepository.flush();
+
+        FotoStorageService.NovaFoto novaFoto = FotoStorageService.NovaFoto.builder()
+                .nomeAquivo(foto.getNomeArquivo())
+                .inputStream(dadosArquivo)
+                .build();
+
+        fotoStorage.armazenar(novaFoto);
+
+        return foto;
     }
 }
