@@ -4,7 +4,7 @@ public class FotoProdutoNaoEncontradoException extends EntidadeNaoEncontradaExce
 
     private static final long serialVersionUID = 1l;
 
-    public FotoProdutoNaoEncontradoException(String produtoId) {
+    public FotoProdutoNaoEncontradoException(Long produtoId) {
         super(String.format("Não existe um cadastro de foto para o produto de código %s", produtoId));
     }
 }
