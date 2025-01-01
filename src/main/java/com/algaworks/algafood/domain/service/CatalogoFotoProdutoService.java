@@ -1,10 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradoException;
-import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.FotoProduto;
-import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,6 +38,7 @@ public class CatalogoFotoProdutoService {
 
         FotoStorageService.NovaFoto novaFoto = FotoStorageService.NovaFoto.builder()
                 .nomeAquivo(foto.getNomeArquivo())
+                .contentType(foto.getContentType())
                 .inputStream(dadosArquivo)
                 .build();
 
