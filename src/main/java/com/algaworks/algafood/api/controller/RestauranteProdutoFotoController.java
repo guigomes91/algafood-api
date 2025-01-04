@@ -84,6 +84,7 @@ public class RestauranteProdutoFotoController {
     public void remover(@PathVariable Long restauranteId,
                         @PathVariable Long produtoId) {
         FotoProduto fotoProduto = catalogoFotoProduto.buscarOuFalhar(restauranteId, produtoId);
+        catalogoFotoProduto.remover(fotoProduto);
     }
 
     private void verificarCompatibilidadeMediaType(MediaType mediaTypeFoto,
