@@ -8,12 +8,10 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.net.URL;
 
 @RequiredArgsConstructor
-@Service
 public class S3FotoStorageService implements FotoStorageService {
 
     private final AmazonS3 amazonS3;
