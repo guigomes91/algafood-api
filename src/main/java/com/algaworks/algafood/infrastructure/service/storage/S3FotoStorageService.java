@@ -10,7 +10,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
+import java.net.URL;
 
 @RequiredArgsConstructor
 @Service
@@ -20,8 +20,13 @@ public class S3FotoStorageService implements FotoStorageService {
     private final StorageProperties storageProperties;
 
     @Override
-    public InputStream recuperar(String nomeArquivo) {
-        return null;
+    public FotoRecuperada recuperar(String nomeArquivo) {
+        String caminhoArquivo = getCaminhoArquivo(nomeArquivo);
+
+        URL url = amazonS3.getUrl(storageProperties.getS3().getBucket(), caminhoArquivo);
+
+        return FotoRecuperada.builder()
+                .url(url.toString()).build();
     }
 
     @Override
