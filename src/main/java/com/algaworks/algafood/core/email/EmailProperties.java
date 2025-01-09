@@ -17,4 +17,10 @@ public class EmailProperties {
 
     @NotNull
     private String remetente;
+
+    private TipoEnvioEmail impl = TipoEnvioEmail.SMTP;
+
+    public enum TipoEnvioEmail {
+        FAKE, SMTP
+    }
 }

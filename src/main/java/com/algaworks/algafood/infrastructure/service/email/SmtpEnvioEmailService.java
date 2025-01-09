@@ -12,8 +12,8 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.internet.MimeMessage;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class SmtpEnvioEmailService implements EnvioEmailService {
 
     private final JavaMailSender mailSender;
@@ -38,7 +38,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
         }
     }
 
-    private String processarTemplate(Mensagem mensagem) {
+    protected String processarTemplate(Mensagem mensagem) {
         try {
             Template template = freemarkerConfig.getTemplate(mensagem.getCorpo());
             return FreeMarkerTemplateUtils.processTemplateIntoString(template, mensagem.getVariaveis());

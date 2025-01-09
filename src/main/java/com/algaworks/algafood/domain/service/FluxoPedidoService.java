@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
+import com.algaworks.algafood.core.email.EmailProperties;
+import com.algaworks.algafood.infrastructure.service.email.FakeEmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +12,8 @@ public class FluxoPedidoService {
 
     private final EmissaoPedidoService emissaoPedidoService;
     private final EnvioEmailService envioEmailService;
+    private final FakeEmailService fakeEmailService;
+    private final EmailProperties emailProperties;
 
     @Transactional
     public void confirmar(String codigoPedido) {
@@ -22,7 +26,13 @@ public class FluxoPedidoService {
                 .variavel("pedido", pedido)
                 .destinatario(pedido.getCliente().getEmail())
                 .build();
-        envioEmailService.enviar(mensagem);
+
+        if (EmailProperties.TipoEnvioEmail.SMTP == emailProperties.getImpl()) {
+            envioEmailService.enviar(mensagem);
+        } else {
+            fakeEmailService.enviar(mensagem);
+        }
+
     }
 
     @Transactional
