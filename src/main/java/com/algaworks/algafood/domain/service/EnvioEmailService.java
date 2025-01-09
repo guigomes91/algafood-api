@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import com.algaworks.algafood.core.email.EmailProperties;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -11,6 +12,8 @@ import java.util.Set;
 public interface EnvioEmailService {
 
     void enviar(Mensagem mensagem);
+
+    EmailProperties.TipoEnvioEmail tipoDeEnvio();
 
     @Getter
     @Builder

@@ -38,6 +38,11 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
         }
     }
 
+    @Override
+    public EmailProperties.TipoEnvioEmail tipoDeEnvio() {
+        return EmailProperties.TipoEnvioEmail.SMTP;
+    }
+
     protected String processarTemplate(Mensagem mensagem) {
         try {
             Template template = freemarkerConfig.getTemplate(mensagem.getCorpo());
