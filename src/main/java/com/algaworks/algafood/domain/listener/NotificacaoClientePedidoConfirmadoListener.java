@@ -5,6 +5,7 @@ import com.algaworks.algafood.domain.service.EnvioEmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @RequiredArgsConstructor
 @Component
@@ -12,7 +13,7 @@ public class NotificacaoClientePedidoConfirmadoListener {
 
     private final EnvioEmailService envioEmailService;
 
-    @EventListener
+    @TransactionalEventListener
     public void aoConfirmarPedido(PedidoConfirmadoEvent event) {
         var pedido = event.getPedido();
 
