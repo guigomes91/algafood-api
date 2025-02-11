@@ -12,7 +12,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.internet.MimeMessage;
 
-@Service
+//@Service
 @RequiredArgsConstructor
 public class SmtpEnvioEmailService implements EnvioEmailService {
 

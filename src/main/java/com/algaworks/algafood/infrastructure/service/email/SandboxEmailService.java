@@ -16,7 +16,7 @@ import javax.mail.internet.MimeMessage;
 
 @RequiredArgsConstructor
 @Primary
-@Service
+//@Service
 @Slf4j
 public class SandboxEmailService implements EnvioEmailService {
 

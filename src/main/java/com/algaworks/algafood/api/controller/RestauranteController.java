@@ -14,8 +14,9 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,39 +32,20 @@ public class RestauranteController {
     private final RestauranteModelAssembler restauranteModelAssembler;
     private final RestauranteInputDisassembler restauranteInputDisassembler;
 
-//    @GetMapping
-//    public MappingJacksonValue listar(@RequestParam(required = false) String projecao) {
-//        List<Restaurante> restaurantes = restauranteRepository.findAll();
-//        List<RestauranteModel> restaurantesModel = restauranteModelAssembler.toCollectionModel(restaurantes);
-//
-//        var restaurantesWrapper = new MappingJacksonValue(restaurantesModel);
-//        restaurantesWrapper.setSerializationView(RestauranteView.Resumo.class);
-//
-//        if ("apenas-nome".equals(projecao)) {
-//            restaurantesWrapper.setSerializationView(RestauranteView.ApenasNome.class);
-//        } else if ("completo".equals(projecao)) {
-//            restaurantesWrapper.setSerializationView(null);
-//        }
-//
-//        return restaurantesWrapper;
-//    }
-
     @JsonView(RestauranteView.Resumo.class)
     @GetMapping
-    public List<RestauranteModel> listar() {
-        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+    public ResponseEntity<List<RestauranteModel>> listar() {
+        var restaurantesModel = restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://www.algafood.local:8000")
+                .body(restaurantesModel);
     }
 
     @JsonView(RestauranteView.ApenasNome.class)
     @GetMapping(params = "projecao=apenas-nome")
-    public List<RestauranteModel> listarApenasNome() {
+    public ResponseEntity<List<RestauranteModel>> listarApenasNome() {
         return listar();
     }
-//
-//    @GetMapping
-//    public List<RestauranteModel> listar() {
-//        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
-//    }
 
     @GetMapping(value = "/{id}")
     public RestauranteModel buscar(@PathVariable Long id) {
