@@ -14,14 +14,13 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/restaurantes")
@@ -34,16 +33,13 @@ public class RestauranteController {
 
     @JsonView(RestauranteView.Resumo.class)
     @GetMapping
-    public ResponseEntity<List<RestauranteModel>> listar() {
-        var restaurantesModel = restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://www.algafood.local:8000")
-                .body(restaurantesModel);
+    public List<RestauranteModel> listar() {
+        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
     @JsonView(RestauranteView.ApenasNome.class)
     @GetMapping(params = "projecao=apenas-nome")
-    public ResponseEntity<List<RestauranteModel>> listarApenasNome() {
+    public List<RestauranteModel> listarApenasNome() {
         return listar();
     }
 
