@@ -38,6 +38,31 @@ function cadastrar() {
   });
 }
 
+function excluir(formaPagamento) {
+  var url = "http://api.algafood.local:8080/formas-pagamento/" + formaPagamento.id;
+
+  $.ajax({
+    url: url,
+    type: "delete",
+
+    success: function(response) {
+      consultar();
+
+      alert("Forma de pagamento removida!");
+    },
+
+    error: function(error) {
+      // tratando todos os erros da categoria 4xx
+      if (error.status >= 400 && error.status <= 499) {
+        var problem = JSON.parse(error.responseText);
+        alert(problem.userMessage);
+      } else {
+        alert("Erro ao remover forma de pagamento!");
+      }
+    }
+  });
+}
+
 function preencherTabela(formasPagamento) {
   $("#tabela tbody tr").remove();
 
