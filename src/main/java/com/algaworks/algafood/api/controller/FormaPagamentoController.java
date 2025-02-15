@@ -31,15 +31,20 @@ public class FormaPagamentoController {
 
     @GetMapping
     public ResponseEntity<List<FormaPagamentoModel>> listar() {
-        final var formasPagamentoModel = formaPagamentoModelAssembler.toCollectionModel(formaPagamentoRepository.findAll());
+        final var formasPagamentoModel = formaPagamentoModelAssembler
+                .toCollectionModel(formaPagamentoRepository.findAll());
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
                 .body(formasPagamentoModel);
     }
 
     @GetMapping("/{id}")
-    public FormaPagamentoModel buscar(@PathVariable Long id) {
-        return formaPagamentoModelAssembler.toModel(cadastroFormaPagamentoService.buscarOuFalhar(id));
+    public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long id) {
+        final var formaPagamentoModel = formaPagamentoModelAssembler
+                .toModel(cadastroFormaPagamentoService.buscarOuFalhar(id));
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .body(formaPagamentoModel);
     }
 
     @PostMapping
