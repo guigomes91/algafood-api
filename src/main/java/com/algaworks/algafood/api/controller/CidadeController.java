@@ -10,6 +10,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,16 +29,19 @@ public class CidadeController {
     private final CidadeModelAssembler cidadeModelAssembler;
     private final CidadeModelDisassembler cidadeModelDisassembler;
 
+    @ApiOperation("Lista as cidades")
     @GetMapping
     public List<CidadeModel> listar() {
         return cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll());
     }
 
+    @ApiOperation("Busca uma cidade por ID")
     @GetMapping("/{id}")
     public CidadeModel buscar(@PathVariable Long id) {
         return cidadeModelAssembler.toModel(cadastroCidadeService.buscarOuFalhar(id));
     }
 
+    @ApiOperation("Cadastra uma cidade")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CidadeModel salvar(@RequestBody @Valid CidadeInput cidadeInput) {
@@ -49,6 +53,7 @@ public class CidadeController {
         }
     }
 
+    @ApiOperation("Atualiza uma cidade por ID")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CidadeModel alterar(@RequestBody @Valid CidadeInput cidadeInput, @PathVariable Long id) {
@@ -62,6 +67,7 @@ public class CidadeController {
         }
     }
 
+    @ApiOperation("Exclui uma cidade por ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long id) {
