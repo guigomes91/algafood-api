@@ -70,7 +70,8 @@ public class CidadeController {
             Cidade cidadeAtual = cadastroCidadeService.buscarOuFalhar(id);
             cidadeModelDisassembler.copyToDomainObject(cidadeInput, cidadeAtual);
 
-            return cidadeModelAssembler.toModel(cadastroCidadeService.salvar(cidadeAtual));
+            return cidadeModelAssembler
+                    .toModel(cadastroCidadeService.salvar(cidadeAtual));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
