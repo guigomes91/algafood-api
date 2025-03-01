@@ -10,7 +10,7 @@ import java.util.List;
 @Api(tags = "Cidades")
 public interface CidadeControllerOpenApi {
 
-    @ApiOperation("Lista as cidades")
+    @ApiOperation("Lista todas as cidades")
     List<CidadeModel> listar();
 
     @ApiOperation("Busca uma cidade por ID")
