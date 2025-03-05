@@ -12,6 +12,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,12 @@ public class CidadeController implements CidadeControllerOpenApi {
     @GetMapping("/{id}")
     public CidadeModel buscar(
             @PathVariable Long id) {
-        return cidadeModelAssembler.toModel(cadastroCidadeService.buscarOuFalhar(id));
+        var cidadeModel = cidadeModelAssembler.toModel(cadastroCidadeService.buscarOuFalhar(id));
+        cidadeModel.add(Link.of("api.algafood.local:8080/cidades/1"));
+        cidadeModel.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
+        cidadeModel.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
+
+        return cidadeModel;
     }
 
     @PostMapping
