@@ -12,17 +12,13 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Link;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RequiredArgsConstructor
 @RestController
@@ -43,9 +39,20 @@ public class CidadeController implements CidadeControllerOpenApi {
     public CidadeModel buscar(
             @PathVariable Long id) {
         var cidadeModel = cidadeModelAssembler.toModel(cadastroCidadeService.buscarOuFalhar(id));
-        cidadeModel.add(Link.of("api.algafood.local:8080/cidades/1"));
-        cidadeModel.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
-        cidadeModel.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
+
+        cidadeModel.add(linkTo(CidadeController.class)
+                .slash(cidadeModel.getId()).withSelfRel());
+
+        //cidadeModel.add(Link.of("api.algafood.local:8080/cidades/1"));
+
+        cidadeModel.add(linkTo(CidadeController.class)
+                .withRel("cidades"));
+
+        //cidadeModel.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
+
+        cidadeModel.getEstado().add(linkTo(EstadoController.class)
+                .slash(cidadeModel.getEstado().getId()).withSelfRel());
+        //cidadeModel.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
 
         return cidadeModel;
     }
