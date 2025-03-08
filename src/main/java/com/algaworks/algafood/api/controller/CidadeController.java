@@ -12,6 +12,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,23 @@ public class CidadeController implements CidadeControllerOpenApi {
     private final CidadeModelDisassembler cidadeModelDisassembler;
 
     @GetMapping
-    public List<CidadeModel> listar() {
-        return cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll());
+    public CollectionModel<CidadeModel> listar() {
+        var cidadesModel = cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll());
+        var cidadesCollectionModel = CollectionModel.of(cidadesModel);
+
+        cidadesModel.forEach(cidadeModel -> {
+            cidadeModel.add(linkTo(methodOn(CidadeController.class)
+                    .buscar(cidadeModel.getId())).withSelfRel());
+
+            cidadeModel.add(linkTo(methodOn(CidadeController.class)
+                    .listar()).withRel("cidades"));
+
+            cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class)
+                    .buscar(cidadeModel.getEstado().getId())).withSelfRel());
+        });
+        cidadesCollectionModel.add(linkTo(CidadeController.class).withSelfRel());
+
+        return cidadesCollectionModel;
     }
 
     @GetMapping("/{id}")
