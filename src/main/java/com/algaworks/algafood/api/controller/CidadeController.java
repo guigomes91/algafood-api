@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -34,39 +33,13 @@ public class CidadeController implements CidadeControllerOpenApi {
 
     @GetMapping
     public CollectionModel<CidadeModel> listar() {
-        var cidadesModel = cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll());
-        var cidadesCollectionModel = CollectionModel.of(cidadesModel);
-
-        cidadesModel.forEach(cidadeModel -> {
-            cidadeModel.add(linkTo(methodOn(CidadeController.class)
-                    .buscar(cidadeModel.getId())).withSelfRel());
-
-            cidadeModel.add(linkTo(methodOn(CidadeController.class)
-                    .listar()).withRel("cidades"));
-
-            cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class)
-                    .buscar(cidadeModel.getEstado().getId())).withSelfRel());
-        });
-        cidadesCollectionModel.add(linkTo(CidadeController.class).withSelfRel());
-
-        return cidadesCollectionModel;
+        return cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public CidadeModel buscar(
             @PathVariable Long id) {
-        var cidadeModel = cidadeModelAssembler.toModel(cadastroCidadeService.buscarOuFalhar(id));
-
-        cidadeModel.add(linkTo(methodOn(CidadeController.class)
-                .buscar(cidadeModel.getId())).withSelfRel());
-
-        cidadeModel.add(linkTo(methodOn(CidadeController.class)
-                .listar()).withRel("cidades"));
-
-        cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class)
-                .buscar(cidadeModel.getEstado().getId())).withSelfRel());
-
-        return cidadeModel;
+        return cidadeModelAssembler.toModel(cadastroCidadeService.buscarOuFalhar(id));
     }
 
     @PostMapping
