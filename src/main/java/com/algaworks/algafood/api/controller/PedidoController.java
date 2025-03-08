@@ -6,18 +6,21 @@ import com.algaworks.algafood.api.assembler.PedidoResumoModelAssembler;
 import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
+import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
+import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
-import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.model.filter.PedidoFilter;
+import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,15 +36,19 @@ public class PedidoController {
     private final PedidoModelAssembler pedidoModelAssembler;
     private final PedidoModelDisassembler pedidoModelDisassembler;
     private final PedidoResumoModelAssembler pedidoResumoModelAssembler;
+    private final PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
     @GetMapping
-    public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro,
-                                             @PageableDefault(size = 10) Pageable pageable) {
-        pageable = traduzirPageable(pageable);
-        var pedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
-        var pedidosModel = pedidoResumoModelAssembler.toCollectionModel(pedidos.getContent());
+    public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter filtro,
+                                                   @PageableDefault(size = 10) Pageable pageable) {
+        Pageable pageableTraduzido = traduzirPageable(pageable);
 
-        return new PageImpl<>(pedidosModel, pageable, pedidos.getTotalElements());
+        Page<Pedido> pedidosPage = pedidoRepository.findAll(
+                PedidoSpecs.usandoFiltro(filtro), pageableTraduzido);
+
+        pedidosPage = new PageWrapper<>(pedidosPage, pageable);
+
+        return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
     }
 
     @GetMapping("/{codigoPedido}")
