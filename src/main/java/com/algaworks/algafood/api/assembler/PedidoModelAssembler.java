@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controller.*;
 import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.domain.model.Pedido;
@@ -17,10 +18,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pedido, PedidoModel> {
 
     private final ModelMapper modelMapper;
+    private final AlgaLinks algaLinks;
 
-    public PedidoModelAssembler(ModelMapper modelMapper) {
+    public PedidoModelAssembler(ModelMapper modelMapper,
+                                AlgaLinks algaLinks) {
         super(PedidoController.class, PedidoModel.class);
         this.modelMapper = modelMapper;
+        this.algaLinks = algaLinks;
     }
 
     @Override
@@ -28,20 +32,7 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
         PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModel);
 
-        TemplateVariables pageVariables = new TemplateVariables(
-                new TemplateVariable("page", VariableType.REQUEST_PARAM),
-                new TemplateVariable("size", VariableType.REQUEST_PARAM),
-                new TemplateVariable("sort", VariableType.REQUEST_PARAM));
-
-        TemplateVariables filtroVariables = new TemplateVariables(
-                new TemplateVariable("clienteId", VariableType.REQUEST_PARAM),
-                new TemplateVariable("restauranteId", VariableType.REQUEST_PARAM),
-                new TemplateVariable("dataCriacaoInicio", VariableType.REQUEST_PARAM),
-                new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM));
-
-        String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
-
-        pedidoModel.add(Link.of(UriTemplate.of(pedidosUrl, pageVariables.concat(filtroVariables)), "pedidos"));
+        pedidoModel.add(algaLinks.linkToPedidos());
 
         pedidoModel.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
                 .buscar(pedido.getRestaurante().getId())).withSelfRel());
