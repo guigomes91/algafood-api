@@ -1,8 +1,6 @@
 package com.algaworks.algafood.api.assembler;
 
-import com.algaworks.algafood.api.model.input.GrupoInput;
 import com.algaworks.algafood.api.model.input.PermissaoInput;
-import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Permissao;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
