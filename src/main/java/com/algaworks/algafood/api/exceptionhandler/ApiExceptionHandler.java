@@ -72,7 +72,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .userMessage(detail)
                 .objects(problemObjects)
                 .build();
-
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
@@ -85,7 +84,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
                                                          WebRequest request) {
-
         return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
     }
 
