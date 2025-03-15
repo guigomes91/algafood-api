@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.assembler.CidadeModelDisassembler;
 import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.input.CidadeInput;
 import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
+import com.algaworks.algafood.core.web.AlgaMediaTypes;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -20,7 +21,7 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/cidades")
+@RequestMapping(path = "/cidades", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
 public class CidadeController implements CidadeControllerOpenApi {
 
     private final CidadeRepository cidadeRepository;
