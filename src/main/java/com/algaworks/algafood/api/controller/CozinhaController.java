@@ -44,6 +44,7 @@ public class CozinhaController {
 
     @GetMapping(value = "/{id}")
     public CozinhaModel buscar(@PathVariable Long id) {
+        logger.info("Buscando cozinhas pelo id {}...", id);
         return cozinhaModelAssembler.toModel(cadastroCozinhaService.buscarOuFalhar(id));
     }
 
