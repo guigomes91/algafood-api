@@ -51,12 +51,14 @@ public class CozinhaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
+        logger.info("Criando cozinha...");
         var cozinha = cozinhaModelDisassembler.toDomainObject(cozinhaInput);
         return cozinhaModelAssembler.toModel(cadastroCozinhaService.salvar(cozinha));
     }
 
     @PutMapping("/{id}")
     public CozinhaModel atualizar(@PathVariable Long id, @RequestBody @Valid CozinhaInput cozinhaInput) {
+        logger.info("Atualizando cozinha...");
         Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(id);
         cozinhaModelDisassembler.copyToDomainObject(cozinhaInput, cozinha);
 
@@ -66,6 +68,7 @@ public class CozinhaController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long id) {
+        logger.info("Removendo cozinha...");
         cadastroCozinhaService.excluir(id);
     }
 
