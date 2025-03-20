@@ -10,6 +10,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.repository.GrupoRepository;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/grupos")
@@ -29,6 +31,7 @@ public class GrupoController {
 
     @GetMapping
     public List<GrupoModel> listar() {
+        log.info("Listando grupos...");
         return grupoModelAssembler.toCollectionModel(grupoRepository.findAll());
     }
 
