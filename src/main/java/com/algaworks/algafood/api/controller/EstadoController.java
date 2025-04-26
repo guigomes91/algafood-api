@@ -35,6 +35,7 @@ public class EstadoController {
 
     @GetMapping("/{id}")
     public EstadoModel buscar(@PathVariable Long id) {
+        Log.info("Buscando estados...");
         return estadoModelAssembler.toModel(cadastroEstadoService.buscarOuFalhar(id));
     }
 
