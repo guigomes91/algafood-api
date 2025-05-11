@@ -1,4 +1,9 @@
-FROM ubuntu:latest
-LABEL authors="guilh"
+FROM openjdk:11-jre
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+COPY target/*.jar /app/api.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "api.jar"]
