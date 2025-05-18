@@ -18,8 +18,6 @@ services:
     image: algafood-api
     environment:
       DB_HOST: algafood-mysql
-    ports:
-      - "8080:8080"
     networks:
       - algafood-network
     depends_on:
