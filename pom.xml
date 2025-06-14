@@ -30,6 +30,7 @@
 		<java.version>17</java.version>
 		<jasperreports.version>6.20.0</jasperreports.version>
 		<springdoc.version>1.6.9</springdoc.version>
+		<springauthserver.version>0.3.1</springauthserver.version>
 	</properties>
 
 	<dependencies>
@@ -136,6 +137,15 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-security</artifactId>
 			<version>${springdoc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-authorization-server</artifactId>
+			<version>${springauthserver.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 	</dependencies>
 
